@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GameOfLife
 {
@@ -14,9 +16,11 @@ namespace GameOfLife
 
     public class Game
     {
-        public int Rows { get; set; }
-        public int Columns { get; set; }
+        public int Rows { get; private set; }
+        public int Columns { get; private set; }
 
+        private int cellCount;
+        private int iterationCount;
         private Cell[,] grid;
 
         public Game(int rows, int columns)
@@ -34,26 +38,37 @@ namespace GameOfLife
             {
                 Draw(grid);
                 grid = Iterate(grid);
+                iterationCount++;
             }
         }
 
         private void Draw(Cell[,] grid, int timeout = 1000)
         {
+            cellCount = 0;
             var stringBuilder = new StringBuilder();
+
             for (var row = 0; row < Rows; row++)
             {
                 for (var column = 0; column < Columns; column++)
                 {
                     var cell = grid[row, column];
                     stringBuilder.Append(cell == Cell.Alive ? "O" : " ");
+
+                    if (cell == Cell.Alive)
+                        cellCount++;
                 }
                 stringBuilder.Append("\n");
             }
 
-            Console.BackgroundColor = ConsoleColor.Black;
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             Console.Write(stringBuilder.ToString());
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine($"Iteration: {iterationCount}");
+            Console.WriteLine($"Cells: {cellCount}");
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt",
+                stringBuilder.ToString());
+
             Thread.Sleep(timeout);
         }
 
@@ -69,13 +84,14 @@ namespace GameOfLife
                     {
                         for (var j = -1; j <= 1; j++)
                         {
-                            aliveNeighbors += currentGrid[row + i, column + j] == Cell.Alive ? 1 : 0;
+                            if (i != 0 || j != 0)
+                            {
+                                aliveNeighbors += currentGrid[row + i, column + j] == Cell.Alive ? 1 : 0;
+                            }
                         }
                     }
 
                     var currentCell = currentGrid[row, column];
-
-                    aliveNeighbors -= currentCell == Cell.Alive ? 1 : 0;
  
                     if (currentCell == Cell.Alive && aliveNeighbors < 2)
                     {

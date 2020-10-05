@@ -5,26 +5,27 @@ using System.Threading;
 
 namespace GameOfLife
 {
-    public enum Status
-    {
-        Dead,
-        Alive
-    }
-
     class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Enter rows:");
-            var rows = Convert.ToInt32(Console.ReadLine());
+            var isValidRowsNumber = int.TryParse(Console.ReadLine(), out int rows);
 
             Console.WriteLine("Enter columns:");
-            var columns = Convert.ToInt32(Console.ReadLine());
+            var isValidColumnsNumber = int.TryParse(Console.ReadLine(), out int columns);
 
             Console.Clear();
 
-            var game = new Game(rows, columns);
-            game.Run();
+            if (!isValidRowsNumber || !isValidColumnsNumber)
+            {
+                Console.WriteLine("Invalid number");
+            }
+            else
+            {
+                var game = new Game(rows, columns);
+                game.Run();
+            }
         }
     }
 }
