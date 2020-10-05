@@ -34,7 +34,7 @@ namespace GameOfLife
         {
             Init();
 
-            while (true)
+            while (!Console.KeyAvailable)
             {
                 Draw(grid);
                 grid = Iterate(grid);
@@ -66,6 +66,8 @@ namespace GameOfLife
             Console.WriteLine("-------------------------------");
             Console.WriteLine($"Iteration: {iterationCount}");
             Console.WriteLine($"Cells: {cellCount}");
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("Press any key to stop");
             File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt",
                 stringBuilder.ToString());
 
