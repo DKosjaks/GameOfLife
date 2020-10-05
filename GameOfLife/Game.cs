@@ -1,38 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GameOfLife
 {
-    public enum Cell
-    {
-        Dead,
-        Alive
-    }
-
     public class Game
     {
         public int Rows { get; private set; }
         public int Columns { get; private set; }
 
-        private int cellCount;
+        private enum Cell
+        {
+            Dead,
+            Alive
+        }
+
         private int iterationCount;
         private Cell[,] grid;
+        private string currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
 
-        public Game(int rows, int columns)
+        public Game()
+        {
+        }
+
+        public Game(int rows, int columns) : this()
         {
             Rows = rows;
             Columns = columns;
-            grid = new Cell[Rows, Columns];
         }
 
-        public void Run()
+        public void Run(bool fromFile = false)
         {
-            Init();
+            if (fromFile)
+                InitFromFile();
+            else
+                InitRandom();
 
             while (!Console.KeyAvailable)
             {
@@ -42,9 +47,9 @@ namespace GameOfLife
             }
         }
 
-        private void Draw(Cell[,] grid, int timeout = 1000)
+        private void Draw(Cell[,] grid)
         {
-            cellCount = 0;
+            var cellCount = 0;
             var stringBuilder = new StringBuilder();
 
             for (var row = 0; row < Rows; row++)
@@ -52,7 +57,7 @@ namespace GameOfLife
                 for (var column = 0; column < Columns; column++)
                 {
                     var cell = grid[row, column];
-                    stringBuilder.Append(cell == Cell.Alive ? "O" : " ");
+                    stringBuilder.Append(cell == Cell.Alive ? 'O' : ' ');
 
                     if (cell == Cell.Alive)
                         cellCount++;
@@ -68,10 +73,26 @@ namespace GameOfLife
             Console.WriteLine($"Cells: {cellCount}");
             Console.WriteLine("-------------------------------");
             Console.WriteLine("Press any key to stop");
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt",
-                stringBuilder.ToString());
 
-            Thread.Sleep(timeout);
+            File.WriteAllText(currentStateFile, stringBuilder.ToString());
+
+            Thread.Sleep(1000);
+        }
+
+        private void InitFromFile()
+        {
+            var fileContents = File.ReadAllLines(currentStateFile);
+            Rows = fileContents.Count();
+            Columns = fileContents.First().Count();
+            grid = new Cell[Rows, Columns];
+
+            for (var row = 0; row < Rows; row++)
+            {
+                for (var column = 0; column < Columns; column++)
+                {
+                    grid[row, column] = (Cell)(fileContents[row][column].Equals('O') ? 1 : 0);
+                }
+            }
         }
 
         private Cell[,] Iterate(Cell[,] currentGrid)
@@ -116,8 +137,10 @@ namespace GameOfLife
             return nextGrid;
         }
 
-        private void Init()
+        private void InitRandom()
         {
+            grid = new Cell[Rows, Columns];
+
             for (var row = 0; row < Rows; row++)
             {
                 for (var column = 0; column < Columns; column++)

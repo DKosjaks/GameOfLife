@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
 
 namespace GameOfLife
 {
@@ -9,22 +6,35 @@ namespace GameOfLife
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter rows:");
-            var isValidRowsNumber = int.TryParse(Console.ReadLine(), out int rows);
+            Console.WriteLine("Load from file?(y/n):");
+            var useFile = Console.ReadLine();
 
-            Console.WriteLine("Enter columns:");
-            var isValidColumnsNumber = int.TryParse(Console.ReadLine(), out int columns);
-
-            Console.Clear();
-
-            if (!isValidRowsNumber || !isValidColumnsNumber)
+            if (useFile == "y")
             {
-                Console.WriteLine("Invalid number");
+                Console.Clear();
+
+                var game = new Game();
+                game.Run(true);
             }
             else
             {
-                var game = new Game(rows, columns);
-                game.Run();
+                Console.WriteLine("Enter rows:");
+                var isValidRowsNumber = int.TryParse(Console.ReadLine(), out int rows);
+
+                Console.WriteLine("Enter columns:");
+                var isValidColumnsNumber = int.TryParse(Console.ReadLine(), out int columns);
+
+                Console.Clear();
+
+                if (!isValidRowsNumber || !isValidColumnsNumber)
+                {
+                    Console.WriteLine("Invalid number");
+                }
+                else
+                {
+                    var game = new Game(rows, columns);
+                    game.Run();
+                }
             }
         }
     }
