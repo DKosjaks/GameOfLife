@@ -1,41 +1,22 @@
 ﻿using System;
 
+//add summary and comments for functions
+//add new class game logic
+//add new file class
+//add new UI class
+//move enum to separate file
+//move game.cs logic somewhere, like game engine class
 namespace GameOfLife
 {
+    /// <summary>
+    /// Main entry point where game initialization happens
+    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Load from file?(y/n):");
-            var useFile = Console.ReadLine();
-
-            if (useFile == "y")
-            {
-                Console.Clear();
-
-                var game = new Game();
-                game.Run(true);
-            }
-            else
-            {
-                Console.WriteLine("Enter rows:");
-                var isValidRowsNumber = int.TryParse(Console.ReadLine(), out int rows);
-
-                Console.WriteLine("Enter columns:");
-                var isValidColumnsNumber = int.TryParse(Console.ReadLine(), out int columns);
-
-                Console.Clear();
-
-                if (!isValidRowsNumber || !isValidColumnsNumber)
-                {
-                    Console.WriteLine("Invalid number");
-                }
-                else
-                {
-                    var game = new Game(rows, columns);
-                    game.Run();
-                }
-            }
+            var gameEngine = new GameEngine();
+            gameEngine.InitGame();
         }
     }
 }
