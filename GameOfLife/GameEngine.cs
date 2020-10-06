@@ -22,6 +22,7 @@ namespace GameOfLife
             uiManager = new UIManager();
         }
 
+        // Inits game object and starts game process
         public void InitGame()
         {
             var game = uiManager.IsFromFile() ?
@@ -31,6 +32,7 @@ namespace GameOfLife
             Run(game);
         }
 
+        // Starts game iteration infinite loop
         private void Run(Game game)
         {
             while (!Console.KeyAvailable)
@@ -41,6 +43,7 @@ namespace GameOfLife
             }
         }
 
+        // Draws current iteration on screen
         private void Draw(Game game)
         {
             var stringBuilder = new StringBuilder();
@@ -63,6 +66,7 @@ namespace GameOfLife
             Thread.Sleep(1000);
         }
 
+        // Updates game grid based on game rules
         private void Iterate(Game game)
         {
             var nextGrid = new Cell[game.Rows, game.Columns];
@@ -105,6 +109,7 @@ namespace GameOfLife
             game.Grid = nextGrid;
         }
 
+        // Init game object from file data
         private Game InitFromFile(string[] fileContents)
         {
             var rows = fileManager.FileRows;
@@ -122,6 +127,7 @@ namespace GameOfLife
             return game;
         }
 
+        // Init game object using random numbers generator
         private Game InitRandom(int rows, int columns)
         {
             var game = new Game(rows, columns, new Cell[rows, columns]);
