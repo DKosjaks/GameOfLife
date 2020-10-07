@@ -1,13 +1,19 @@
-﻿using System;
-using System.Text;
-
-namespace GameOfLife
+﻿namespace GameOfLife
 {
+    using System;
+    using System.Text;
+
     class UIManager
     {
-        // Displays game grid and statistics
+        /// <summary>
+        /// Displays game grid and statistics
+        /// </summary>
+        /// <param name="stringBuilder"></param>
+        /// <param name="iterationCount"></param>
+        /// <param name="cellCount"></param>
         public void ShowActiveGame(StringBuilder stringBuilder, int iterationCount, int cellCount)
         {
+            Console.Clear();
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             Console.Write(stringBuilder.ToString());
@@ -18,7 +24,10 @@ namespace GameOfLife
             Console.WriteLine("Press any key to stop");
         }
 
-        // Asks user if he wants to use file to load last game state
+        /// <summary>
+        /// Asks user if he wants to use file to load last game state
+        /// </summary>
+        /// <returns></returns>
         public bool IsFromFile()
         {
             Console.WriteLine("Load from file?(y/n):");
@@ -26,7 +35,10 @@ namespace GameOfLife
             return Console.ReadLine() == "y" ? true : false;
         }
 
-        // Asks user to enter rows number
+        /// <summary>
+        /// Asks user to enter rows number
+        /// </summary>
+        /// <returns></returns>
         public int GetRows()
         {
             bool valid = false;
@@ -42,7 +54,10 @@ namespace GameOfLife
             return rows;
         }
 
-        // Asks user to enter columns number
+        /// <summary>
+        /// Asks user to enter columns number
+        /// </summary>
+        /// <returns></returns>
         public int GetColumns()
         {
             bool valid = false;

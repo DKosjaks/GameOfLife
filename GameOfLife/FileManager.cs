@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace GameOfLife
+﻿namespace GameOfLife
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+
     /// <summary>
     /// Class for all game file operations
     /// </summary>
@@ -15,13 +15,19 @@ namespace GameOfLife
 
         private string currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
 
-        // Saves game cell grid to file
+        /// <summary>
+        /// Save game grid to a file
+        /// </summary>
+        /// <param name="stringBuilder"></param>
         public void SaveState(StringBuilder stringBuilder)
         {
             File.WriteAllText(currentStateFile, stringBuilder.ToString());
         }
 
-        // Gets game cell grid info from file
+        /// <summary>
+        /// Gets game cell grid info from file
+        /// </summary>
+        /// <returns></returns>
         public string[] LoadState()
         {
             var fileContents = File.ReadAllLines(currentStateFile);

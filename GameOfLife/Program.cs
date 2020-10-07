@@ -1,5 +1,4 @@
-﻿
-namespace GameOfLife
+﻿namespace GameOfLife
 {
     /// <summary>
     /// Main entry point where game initialization happens
