@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
-    using System.Threading;
 
     class UIManager
     {
@@ -15,7 +14,7 @@
         /// <param name="cellCount"></param>
         public void DrawAllGames(List<Game> games)
         {
-            Console.Clear();
+            ShowExitMsg();
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             int leftPos = 0;
@@ -30,13 +29,11 @@
                     leftPos = 0;
                 
                 if (i > 3)
-                    topPos = games[i].Grid.GetLength(0) + 5;
+                    topPos = games[i].Grid.GetLength(0) + 2;
 
                 DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, false);
                 leftPos += games[i].Grid.GetLength(1);
             }
-
-            ShowExitMsg();
         }
 
         /// <summary>
@@ -56,7 +53,7 @@
             {
                 try
                 {
-                    Console.SetCursorPosition(leftPos, i + topPos);
+                    Console.SetCursorPosition(leftPos, i + 3 + topPos);
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
@@ -81,8 +78,9 @@
                 Console.Write('|');
             }
 
-            Console.Write(Environment.NewLine);
+            Console.SetCursorPosition(leftPos, topPos + 1);
             Console.WriteLine("Iteration: " + iterationCount);
+            Console.SetCursorPosition(leftPos, topPos + 2);
             Console.WriteLine("Cells: " + cellCount);
 
             if (saveToFile)
@@ -105,7 +103,7 @@
         /// </summary>
         public void ShowExitMsg()
         {
-            Console.Write(Environment.NewLine + Environment.NewLine);
+            Console.Clear();
             Console.WriteLine("Press any key to stop");
         }
 

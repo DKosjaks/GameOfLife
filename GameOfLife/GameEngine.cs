@@ -33,9 +33,9 @@
 
             while (!Console.KeyAvailable)
             {
+                uiManager.ShowExitMsg();
                 uiManager.DrawGame(game.Grid, 0, 0, game.IterationCount);
                 RunGame(game);
-                uiManager.ShowExitMsg();
             }
         }
 
@@ -55,7 +55,7 @@
         }
 
         /// <summary>
-        /// Infinite iterations loop
+        /// Game iteration
         /// </summary>
         /// <param name="game"></param>
         private void RunGame(Game game)
