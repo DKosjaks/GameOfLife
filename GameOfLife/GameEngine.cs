@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Security.Cryptography;
-    using System.Text;
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Handles game logic and objects
@@ -12,59 +12,56 @@
     class GameEngine
     {
         private readonly List<Game> games;
-        private FileManager fileManager;
         private UIManager uiManager;
 
         public GameEngine()
         {
             games = new List<Game>();
-            fileManager = new FileManager();
             uiManager = new UIManager();
         }
 
         /// <summary>
         /// Inits game object and starts game loop
         /// </summary>
-        public void InitGame()
+        public void InitOneGame()
         {
             var isFile = uiManager.IsFromFile();
 
             var game = isFile ?
-                InitFromFile(fileManager.LoadState()) :
+                InitFromFile(FileManager.LoadState()) :
                 InitRandom(uiManager.GetRows(), uiManager.GetColumns());
 
             while (!Console.KeyAvailable)
             {
-                Draw(game);
-                Iterate(game);
-                game.IterationCount++;
+                uiManager.DrawGame(game.Grid, 0, 0, game.IterationCount);
+                RunGame(game);
+                uiManager.ShowExitMsg();
             }
         }
 
         /// <summary>
-        /// Draws current iteration on screen
+        /// Inits and runs in parallel multiple games
+        /// </summary>
+        public void InitAllGames()
+        {
+            for (int i = 0; i < 8; i++)
+                games.Add(InitRandom(10, 20));
+
+            while (!Console.KeyAvailable)
+            {
+                uiManager.DrawAllGames(games);
+                Parallel.ForEach(games, RunGame);
+            }
+        }
+
+        /// <summary>
+        /// Infinite iterations loop
         /// </summary>
         /// <param name="game"></param>
-        private void Draw(Game game)
+        private void RunGame(Game game)
         {
-            var stringBuilder = new StringBuilder();
-            game.CellCount = 0;
-
-            for (var row = 0; row < game.Rows; row++)
-            {
-                for (var column = 0; column < game.Columns; column++)
-                {
-                    var cell = game.Grid[row, column];
-                    stringBuilder.Append(cell == CellEnum.Alive ? 'O' : ' ');
-
-                    if (cell == CellEnum.Alive)
-                        game.CellCount++;
-                }
-                stringBuilder.Append("\n");
-            }
-
-            uiManager.ShowActiveGame(stringBuilder, game.IterationCount, game.CellCount);
-            fileManager.SaveState(stringBuilder);
+            Iterate(game);
+            game.IterationCount++;
             Thread.Sleep(1000);
         }
 
@@ -121,8 +118,8 @@
         /// <returns></returns>
         private Game InitFromFile(string[] fileContents)
         {
-            var rows = fileManager.FileRows;
-            var columns = fileManager.FileColumns;
+            var rows = FileManager.FileRows;
+            var columns = FileManager.FileColumns;
             var game = new Game(rows, columns, new CellEnum[rows, columns]);
 
             for (var row = 0; row < rows; row++)

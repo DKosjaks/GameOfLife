@@ -1,7 +1,9 @@
 ﻿namespace GameOfLife
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
+    using System.Threading;
 
     class UIManager
     {
@@ -11,16 +13,99 @@
         /// <param name="stringBuilder"></param>
         /// <param name="iterationCount"></param>
         /// <param name="cellCount"></param>
-        public void ShowActiveGame(StringBuilder stringBuilder, int iterationCount, int cellCount)
+        public void DrawAllGames(List<Game> games)
         {
             Console.Clear();
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
-            Console.Write(stringBuilder.ToString());
-            Console.WriteLine("-------------------------------");
-            Console.WriteLine($"Iteration: {iterationCount}");
-            Console.WriteLine($"Cells: {cellCount}");
-            Console.WriteLine("-------------------------------");
+            int leftPos = 0;
+            int topPos = 0;
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                if (i > 7)
+                    break;
+
+                if (i == 4)
+                    leftPos = 0;
+                
+                if (i > 3)
+                    topPos = games[i].Grid.GetLength(0) + 5;
+
+                DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, false);
+                leftPos += games[i].Grid.GetLength(1);
+            }
+
+            ShowExitMsg();
+        }
+
+        /// <summary>
+        /// Draw one game cell grid
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <param name="leftPos"></param>
+        /// <param name="topPos"></param>
+        /// <param name="iterationCount"></param>
+        /// <param name="saveToFile"></param>
+        public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount, bool saveToFile = true)
+        {
+            int cellCount = 0;
+            var stringBuilder = new StringBuilder();
+
+            for (var i = 0; i < grid.GetLength(0); i++)
+            {
+                try
+                {
+                    Console.SetCursorPosition(leftPos, i + topPos);
+                }
+                catch (ArgumentOutOfRangeException e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                }
+                
+                Console.Write('|');
+
+                for (var j = 0; j < grid.GetLength(1); j++)
+                {
+                    var cell = grid[i, j] == CellEnum.Alive ? 'O' : ' ';
+                    if (grid[i, j] == CellEnum.Alive)
+                        cellCount++;
+                    
+                    Console.Write(cell);
+                    stringBuilder.Append(cell);
+                }
+                stringBuilder.Append("\n");
+
+                Console.Write('|');
+            }
+
+            Console.Write(Environment.NewLine);
+            Console.WriteLine("Iteration: " + iterationCount);
+            Console.WriteLine("Cells: " + cellCount);
+
+            if (saveToFile)
+                FileManager.SaveState(stringBuilder);
+        }
+
+        /// <summary>
+        /// Initial msg to choose one or many games
+        /// </summary>
+        /// <returns></returns>
+        public static bool ShowInitMsg()
+        {
+            Console.WriteLine("Start all games?(y/n):");
+
+            return Console.ReadLine() == "y" ? true : false;
+        }
+
+        /// <summary>
+        /// Shows msg how to stop program
+        /// </summary>
+        public void ShowExitMsg()
+        {
+            Console.Write(Environment.NewLine + Environment.NewLine);
             Console.WriteLine("Press any key to stop");
         }
 

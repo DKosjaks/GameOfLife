@@ -10,16 +10,16 @@
     /// </summary>
     class FileManager
     {
-        public int FileRows { get; private set; }
-        public int FileColumns { get; private set; }
+        public static int FileRows { get; private set; }
+        public static int FileColumns { get; private set; }
 
-        private string currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
+        private static string currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
 
         /// <summary>
         /// Save game grid to a file
         /// </summary>
         /// <param name="stringBuilder"></param>
-        public void SaveState(StringBuilder stringBuilder)
+        public static void SaveState(StringBuilder stringBuilder)
         {
             File.WriteAllText(currentStateFile, stringBuilder.ToString());
         }
@@ -28,7 +28,7 @@
         /// Gets game cell grid info from file
         /// </summary>
         /// <returns></returns>
-        public string[] LoadState()
+        public static string[] LoadState()
         {
             var fileContents = File.ReadAllLines(currentStateFile);
             FileRows = fileContents.Count();

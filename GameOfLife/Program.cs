@@ -8,7 +8,10 @@
         static void Main(string[] args)
         {
             var gameEngine = new GameEngine();
-            gameEngine.InitGame();
+            if (UIManager.ShowInitMsg())
+                gameEngine.InitAllGames();
+            else
+                gameEngine.InitOneGame();
         }
     }
 }
