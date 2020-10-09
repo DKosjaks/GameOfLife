@@ -3,20 +3,20 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
 
     class UIManager
     {
         /// <summary>
         /// Displays game grid and statistics
         /// </summary>
-        /// <param name="stringBuilder"></param>
-        /// <param name="iterationCount"></param>
+        /// <param name="games"></param>
+        /// <param name="gamesCount"></param>
         /// <param name="cellCount"></param>
-        public void DrawAllGames(List<Game> games)
+        public void DrawAllGames(List<Game> games, int gamesCount, int cellCount)
         {
             ShowExitMsg();
-            ShowAllGamesStats(games.Count, games.Sum(game => game.CellCount));
+            ShowAllGamesStats(gamesCount, cellCount);
+
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             int leftPos = 0;

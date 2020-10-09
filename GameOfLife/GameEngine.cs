@@ -37,12 +37,15 @@
                 int columns = _uiManager.GetColumns();
 
                 for (int i = 0; i < 1000; i++)
-                    games.Add(InitRandom(rows, columns));
+                    games.Add(InitRandom(i, rows, columns));
             }
-            
+
+            var gameIds = _uiManager.GetGamesIds().Split(',').Select(int.Parse).ToArray();
+            var filteredGames = games.Where(game => gameIds.Contains(game.Id)).ToList();
+
             while (!Console.KeyAvailable)
             {
-                _uiManager.DrawAllGames(games);
+                _uiManager.DrawAllGames(filteredGames, games.Count, games.Sum(game => game.CellCount));
                 Parallel.ForEach(games, game => { Iterate(game); game.IterationCount++; });
                 Thread.Sleep(1000);
             }
@@ -100,12 +103,14 @@
         /// <summary>
         /// Init game object using random numbers generator
         /// </summary>
+        /// <param name="id"></param>
         /// <param name="rows"></param>
         /// <param name="columns"></param>
         /// <returns></returns>
-        private Game InitRandom(int rows, int columns)
+        private Game InitRandom(int id, int rows, int columns)
         {
             var game = new Game();
+            game.Id = id;
             game.Rows = rows;
             game.Columns = columns;
             game.Grid = new CellEnum[rows, columns];
