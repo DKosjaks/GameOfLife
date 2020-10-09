@@ -31,7 +31,7 @@
                 if (i > 3)
                     topPos = games[i].Grid.GetLength(0) + 2;
 
-                DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, false);
+                DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount);
                 leftPos += games[i].Grid.GetLength(1);
             }
         }
@@ -43,8 +43,7 @@
         /// <param name="leftPos"></param>
         /// <param name="topPos"></param>
         /// <param name="iterationCount"></param>
-        /// <param name="saveToFile"></param>
-        public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount, bool saveToFile = true)
+        public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount)
         {
             int cellCount = 0;
             var stringBuilder = new StringBuilder();
@@ -82,20 +81,13 @@
             Console.WriteLine("Iteration: " + iterationCount);
             Console.SetCursorPosition(leftPos, topPos + 2);
             Console.WriteLine("Cells: " + cellCount);
-
-            if (saveToFile)
-                FileManager.SaveState(stringBuilder);
         }
 
-        /// <summary>
-        /// Initial msg to choose one or many games
-        /// </summary>
-        /// <returns></returns>
-        public static bool ShowInitMsg()
+        public string GetGamesIds()
         {
-            Console.WriteLine("Start all games?(y/n):");
+            Console.WriteLine("Specify game ids to show, separated by comma (0-999):");
 
-            return Console.ReadLine() == "y" ? true : false;
+            return Console.ReadLine();
         }
 
         /// <summary>
@@ -104,7 +96,7 @@
         public void ShowExitMsg()
         {
             Console.Clear();
-            Console.WriteLine("Press any key to stop");
+            Console.WriteLine("Press any key to stop and save game state to a file");
         }
 
         /// <summary>

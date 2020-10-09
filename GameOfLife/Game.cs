@@ -5,17 +5,10 @@
     /// </summary>
     public class Game
     {
-        public int Rows { get; private set; }
-        public int Columns { get; private set; }
+        public int Rows { get; set; }
+        public int Columns { get; set; }
         public CellEnum[,] Grid { get; set; }
         public int IterationCount { get; set; }
         public int CellCount { get; set; }
-
-        public Game(int rows, int columns, CellEnum[,] grid)
-        {
-            Rows = rows;
-            Columns = columns;
-            Grid = grid;
-        }
     }
 }

@@ -11,32 +11,11 @@
     /// </summary>
     class GameEngine
     {
-        private readonly List<Game> games;
-        private UIManager uiManager;
+        private readonly UIManager _uiManager;
 
         public GameEngine()
         {
-            games = new List<Game>();
-            uiManager = new UIManager();
-        }
-
-        /// <summary>
-        /// Inits game object and starts game loop
-        /// </summary>
-        public void InitOneGame()
-        {
-            var isFile = uiManager.IsFromFile();
-
-            var game = isFile ?
-                InitFromFile(FileManager.LoadState()) :
-                InitRandom(uiManager.GetRows(), uiManager.GetColumns());
-
-            while (!Console.KeyAvailable)
-            {
-                uiManager.ShowExitMsg();
-                uiManager.DrawGame(game.Grid, 0, 0, game.IterationCount);
-                RunGame(game);
-            }
+            _uiManager = new UIManager();
         }
 
         /// <summary>
@@ -44,25 +23,30 @@
         /// </summary>
         public void InitAllGames()
         {
-            for (int i = 0; i < 8; i++)
-                games.Add(InitRandom(10, 20));
+            List<Game> games;
 
+            if (_uiManager.IsFromFile())
+            {
+                games = FileManager.LoadState();
+            }
+            else
+            {
+                games = new List<Game>();
+                int rows = _uiManager.GetRows();
+                int columns = _uiManager.GetColumns();
+
+                for (int i = 0; i < 1000; i++)
+                    games.Add(InitRandom(rows, columns));
+            }
+            
             while (!Console.KeyAvailable)
             {
-                uiManager.DrawAllGames(games);
-                Parallel.ForEach(games, RunGame);
+                _uiManager.DrawAllGames(games);
+                Parallel.ForEach(games, game => { Iterate(game); game.IterationCount++; });
+                Thread.Sleep(1000);
             }
-        }
 
-        /// <summary>
-        /// Game iteration
-        /// </summary>
-        /// <param name="game"></param>
-        private void RunGame(Game game)
-        {
-            Iterate(game);
-            game.IterationCount++;
-            Thread.Sleep(1000);
+            FileManager.SaveState(games);
         }
 
         /// <summary>
@@ -112,28 +96,6 @@
         }
 
         /// <summary>
-        /// Init game object from file data
-        /// </summary>
-        /// <param name="fileContents"></param>
-        /// <returns></returns>
-        private Game InitFromFile(string[] fileContents)
-        {
-            var rows = FileManager.FileRows;
-            var columns = FileManager.FileColumns;
-            var game = new Game(rows, columns, new CellEnum[rows, columns]);
-
-            for (var row = 0; row < rows; row++)
-            {
-                for (var column = 0; column < columns; column++)
-                {
-                    game.Grid[row, column] = (CellEnum)(fileContents[row][column].Equals('O') ? 1 : 0);
-                }
-            }
-
-            return game;
-        }
-
-        /// <summary>
         /// Init game object using random numbers generator
         /// </summary>
         /// <param name="rows"></param>
@@ -141,7 +103,10 @@
         /// <returns></returns>
         private Game InitRandom(int rows, int columns)
         {
-            var game = new Game(rows, columns, new CellEnum[rows, columns]);
+            var game = new Game();
+            game.Rows = rows;
+            game.Columns = columns;
+            game.Grid = new CellEnum[rows, columns];
 
             for (var row = 0; row < rows; row++)
             {
