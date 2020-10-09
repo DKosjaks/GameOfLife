@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Threading;
     using System.Threading.Tasks;
@@ -93,6 +94,7 @@
                 }
 
             game.Grid = nextGrid;
+            game.CellCount = nextGrid.Cast<int>().Sum();
         }
 
         /// <summary>
@@ -113,6 +115,7 @@
                 for (var column = 0; column < columns; column++)
                 {
                     game.Grid[row, column] = (CellEnum)RandomNumberGenerator.GetInt32(0, 2);
+                    game.CellCount += game.Grid[row, column] == CellEnum.Alive ? 1 : 0;
                 }
             }
 

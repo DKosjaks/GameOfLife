@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
 
     class UIManager
@@ -15,6 +16,7 @@
         public void DrawAllGames(List<Game> games)
         {
             ShowExitMsg();
+            ShowAllGamesStats(games.Count, games.Sum(game => game.CellCount));
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
             int leftPos = 0;
@@ -29,9 +31,9 @@
                     leftPos = 0;
                 
                 if (i > 3)
-                    topPos = games[i].Grid.GetLength(0) + 2;
+                    topPos = games[i].Grid.GetLength(0) + 3;
 
-                DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount);
+                DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, games[i].CellCount);
                 leftPos += games[i].Grid.GetLength(1);
             }
         }
@@ -43,16 +45,14 @@
         /// <param name="leftPos"></param>
         /// <param name="topPos"></param>
         /// <param name="iterationCount"></param>
-        public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount)
+        /// <param name="cellCount"></param>
+        public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount, int cellCount)
         {
-            int cellCount = 0;
-            var stringBuilder = new StringBuilder();
-
             for (var i = 0; i < grid.GetLength(0); i++)
             {
                 try
                 {
-                    Console.SetCursorPosition(leftPos, i + 3 + topPos);
+                    Console.SetCursorPosition(leftPos, i + 5 + topPos);
                 }
                 catch (ArgumentOutOfRangeException e)
                 {
@@ -66,20 +66,16 @@
                 for (var j = 0; j < grid.GetLength(1); j++)
                 {
                     var cell = grid[i, j] == CellEnum.Alive ? 'O' : ' ';
-                    if (grid[i, j] == CellEnum.Alive)
-                        cellCount++;
                     
                     Console.Write(cell);
-                    stringBuilder.Append(cell);
                 }
-                stringBuilder.Append("\n");
 
                 Console.Write('|');
             }
 
-            Console.SetCursorPosition(leftPos, topPos + 1);
+            Console.SetCursorPosition(leftPos, topPos + 3);
             Console.WriteLine("Iteration: " + iterationCount);
-            Console.SetCursorPosition(leftPos, topPos + 2);
+            Console.SetCursorPosition(leftPos, topPos + 4);
             Console.WriteLine("Cells: " + cellCount);
         }
 
@@ -97,6 +93,12 @@
         {
             Console.Clear();
             Console.WriteLine("Press any key to stop and save game state to a file");
+        }
+
+        private void ShowAllGamesStats(int gamesCount, int cellsCount)
+        {
+            Console.Write("Total games: " + gamesCount);
+            Console.Write(". Total cells: " + cellsCount);
         }
 
         /// <summary>
