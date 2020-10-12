@@ -39,13 +39,15 @@
                 for (int i = 0; i < 1000; i++)
                     games.Add(InitRandom(i, rows, columns));
             }
-
-            var gameIds = _uiManager.GetGamesIds().Split(',').Select(int.Parse).ToArray();
+            
+            var gameIds = _uiManager.GetGamesIds();
             var filteredGames = games.Where(game => gameIds.Contains(game.Id)).ToList();
 
             while (!Console.KeyAvailable)
             {
-                _uiManager.DrawAllGames(filteredGames, games.Count, games.Sum(game => game.CellCount));
+                _uiManager.DrawAllGames(filteredGames.Count > 0 ? filteredGames : games,
+                    games.Count,
+                    games.Sum(game => game.CellCount));
                 Parallel.ForEach(games, game => { Iterate(game); game.IterationCount++; });
                 Thread.Sleep(1000);
             }

@@ -13,7 +13,7 @@
         private static string _currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
 
         /// <summary>
-        /// Saves all game info to a file
+        /// Saves all game data to a file
         /// </summary>
         /// <param name="stringBuilder"></param>
         public static void SaveState(List<Game> games)
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Reads game data info from file
+        /// Reads game data from file
         /// </summary>
         /// <returns></returns>
         public static List<Game> LoadState()

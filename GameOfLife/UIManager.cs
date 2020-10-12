@@ -79,11 +79,27 @@
             Console.WriteLine("Cells: " + cellCount);
         }
 
-        public string GetGamesIds()
+        /// <summary>
+        /// Reads game ids input from user
+        /// </summary>
+        /// <returns></returns>
+        public int[] GetGamesIds()
         {
+            int[] gameIds = null;
             Console.WriteLine("Specify game ids to show, separated by comma (0-999):");
 
-            return Console.ReadLine();
+            try
+            {
+                gameIds = Console.ReadLine().Split(',').Select(int.Parse).ToArray();
+            }
+            catch (FormatException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+
+            return gameIds;
         }
 
         /// <summary>
