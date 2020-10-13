@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    class UIManager
+    public class UIManager
     {
         /// <summary>
         /// Displays game grid and statistics

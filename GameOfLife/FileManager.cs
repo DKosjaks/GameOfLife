@@ -8,7 +8,7 @@
     /// <summary>
     /// Class for all game file operations
     /// </summary>
-    class FileManager
+    public class FileManager
     {
         private static string _currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
 

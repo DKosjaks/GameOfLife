@@ -10,9 +10,10 @@
     /// <summary>
     /// Handles game logic and objects
     /// </summary>
-    class GameEngine
+    public class GameEngine
     {
         private readonly UIManager _uiManager;
+        private List<Game> games;
 
         public GameEngine()
         {
@@ -20,12 +21,10 @@
         }
 
         /// <summary>
-        /// Inits and runs in parallel multiple games
+        /// Inits games from file or randomly
         /// </summary>
-        public void InitAllGames()
+        private void InitAllGames()
         {
-            List<Game> games;
-
             if (_uiManager.IsFromFile())
             {
                 games = FileManager.LoadState();
@@ -39,7 +38,15 @@
                 for (int i = 0; i < 1000; i++)
                     games.Add(InitRandom(i, rows, columns));
             }
-            
+        }
+
+        /// <summary>
+        /// Starts games iterations
+        /// </summary>
+        public void RunGames()
+        {
+            InitAllGames();
+
             var gameIds = _uiManager.GetGamesIds();
             var filteredGames = games.Where(game => gameIds.Contains(game.Id)).ToList();
 
@@ -59,7 +66,7 @@
         /// Updates game grid based on game rules
         /// </summary>
         /// <param name="game"></param>
-        private void Iterate(Game game)
+        public void Iterate(Game game)
         {
             var nextGrid = new CellEnum[game.Rows, game.Columns];
 
@@ -109,13 +116,15 @@
         /// <param name="rows"></param>
         /// <param name="columns"></param>
         /// <returns></returns>
-        private Game InitRandom(int id, int rows, int columns)
+        public Game InitRandom(int id, int rows, int columns)
         {
-            var game = new Game();
-            game.Id = id;
-            game.Rows = rows;
-            game.Columns = columns;
-            game.Grid = new CellEnum[rows, columns];
+            var game = new Game
+            {
+                Id = id,
+                Rows = rows,
+                Columns = columns,
+                Grid = new CellEnum[rows, columns]
+            };
 
             for (var row = 0; row < rows; row++)
             {

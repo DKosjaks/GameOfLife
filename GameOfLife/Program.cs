@@ -8,7 +8,7 @@
         static void Main(string[] args)
         {
             var gameEngine = new GameEngine();
-            gameEngine.InitAllGames();
+            gameEngine.RunGames();
         }
     }
 }
