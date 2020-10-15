@@ -5,12 +5,17 @@ namespace GameOfLifeXUnitTests
 
     public class GameEngineTests
     {
+        private GameEngine _gameEngine;
+
+        public GameEngineTests()
+        {
+            _gameEngine = new GameEngine();
+        }
+
         [Fact]
         public void InitRandom_Result_NotNull()
         {
-            var gameEngine = new GameEngine();
-
-            var result = gameEngine.InitRandom(1, 20, 20);
+            var result = _gameEngine.InitRandom(1, 20, 20);
 
             Assert.NotNull(result);
         }
@@ -18,12 +23,11 @@ namespace GameOfLifeXUnitTests
         [Fact]
         public void Iterate_PredefinedShapesResults_AreValid()
         {
-            var gameEngine = new GameEngine();
             var blockGame = InitBlockGame();
             var blinkerGame = InitBlinkerGame();
 
-            gameEngine.Iterate(blockGame);
-            gameEngine.Iterate(blinkerGame);
+            _gameEngine.Iterate(blockGame);
+            _gameEngine.Iterate(blinkerGame);
 
             Assert.Equal(InitBlockGame().Grid, blockGame.Grid);
             Assert.Equal(CellEnum.Alive, blinkerGame.Grid[2, 1]);

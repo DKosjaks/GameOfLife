@@ -3,32 +3,41 @@
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.IO.Abstractions;
 
     /// <summary>
     /// Class for all game file operations
     /// </summary>
     public class FileManager
     {
-        private static string _currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
+        public static string _currentStateFile = AppDomain.CurrentDomain.BaseDirectory + @"/current_state.txt";
+
+        private readonly IFileSystem _fileSystem;
+
+        public FileManager() : this(new FileSystem()) { }
+
+        public FileManager(IFileSystem fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
 
         /// <summary>
         /// Saves all game data to a file
         /// </summary>
         /// <param name="stringBuilder"></param>
-        public static void SaveState(List<Game> games)
+        public void SaveState(List<Game> games)
         {
             var json = JsonConvert.SerializeObject(games);
-            File.WriteAllText(_currentStateFile, json);
+            _fileSystem.File.WriteAllText(_currentStateFile, json);
         }
 
         /// <summary>
         /// Reads game data from file
         /// </summary>
         /// <returns></returns>
-        public static List<Game> LoadState()
+        public List<Game> LoadState()
         {
-            var fileContents = File.ReadAllText(_currentStateFile);
+            var fileContents = _fileSystem.File.ReadAllText(_currentStateFile);
             var games = JsonConvert.DeserializeObject<List<Game>>(fileContents);
 
             return games;

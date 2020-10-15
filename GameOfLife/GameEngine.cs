@@ -13,11 +13,13 @@
     public class GameEngine
     {
         private readonly UIManager _uiManager;
+        private readonly FileManager _fileManager;
         private List<Game> games;
 
         public GameEngine()
         {
             _uiManager = new UIManager();
+            _fileManager = new FileManager();
         }
 
         /// <summary>
@@ -27,7 +29,7 @@
         {
             if (_uiManager.IsFromFile())
             {
-                games = FileManager.LoadState();
+                games = _fileManager.LoadState();
             }
             else
             {
@@ -59,7 +61,7 @@
                 Thread.Sleep(1000);
             }
 
-            FileManager.SaveState(games);
+            _fileManager.SaveState(games);
         }
 
         /// <summary>
@@ -73,18 +75,7 @@
             for (var row = 1; row < game.Rows - 1; row++)
                 for (var column = 1; column < game.Columns - 1; column++)
                 {
-                    var aliveNeighbors = 0;
-                    for (var i = -1; i <= 1; i++)
-                    {
-                        for (var j = -1; j <= 1; j++)
-                        {
-                            if (i != 0 || j != 0)
-                            {
-                                aliveNeighbors += game.Grid[row + i, column + j] == CellEnum.Alive ? 1 : 0;
-                            }
-                        }
-                    }
-
+                    var aliveNeighbors = GetAliveNeighbors(game, row, column);
                     var currentCell = game.Grid[row, column];
 
                     if (currentCell == CellEnum.Alive && aliveNeighbors < 2)
@@ -107,6 +98,30 @@
 
             game.Grid = nextGrid;
             game.CellCount = nextGrid.Cast<int>().Sum();
+        }
+
+        /// <summary>
+        /// Count alive cell neighbors
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        private int GetAliveNeighbors(Game game, int row, int column)
+        {
+            var aliveNeighbors = 0;
+            for (var i = -1; i <= 1; i++)
+            {
+                for (var j = -1; j <= 1; j++)
+                {
+                    if (i != 0 || j != 0)
+                    {
+                        aliveNeighbors += game.Grid[row + i, column + j] == CellEnum.Alive ? 1 : 0;
+                    }
+                }
+            }
+
+            return aliveNeighbors;
         }
 
         /// <summary>
