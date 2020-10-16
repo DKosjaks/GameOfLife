@@ -12,7 +12,7 @@
     /// </summary>
     public class GameEngine
     {
-        private System.Timers.Timer _timer;
+        private Timer _timer;
         private readonly UIManager _uiManager;
         private readonly FileManager _fileManager;
         private List<Game> games;
@@ -38,8 +38,9 @@
             else
             {
                 games = new List<Game>();
-                int rows = _uiManager.GetRows();
-                int columns = _uiManager.GetColumns();
+                var gridSize = _uiManager.GetGridSize();
+                int rows = gridSize[0];
+                int columns = gridSize[1];
 
                 for (int i = 0; i < 1000; i++)
                 {

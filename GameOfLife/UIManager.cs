@@ -43,7 +43,7 @@
                 }
 
                 DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, games[i].CellCount);
-                leftPos += games[i].Grid.GetLength(1);
+                leftPos += games[i].Grid.GetLength(1) + 1;
             }
         }
 
@@ -129,45 +129,33 @@
         {
             Console.WriteLine("Load from file?(y/n):");
 
-            return Console.ReadLine() == "y" ? true : false;
+            return Console.ReadLine() == "y";
         }
 
         /// <summary>
-        /// Asks user to enter rows number
+        /// Asks user to enter rows and columns
         /// </summary>
-        /// <returns>Number of rows</returns>
-        public int GetRows()
+        /// <returns>Grid size array where element 0 is rows, element 1 is columns</returns>
+        public int[] GetGridSize()
         {
-            bool valid = false;
-            int rows = 0;
+            var validRows = false;
+            var validColumns = false;
+            var size = new int[2];
 
-            while (!valid)
+            while (!validRows)
             {
                 Console.WriteLine($"Enter rows (max 20, greater than 0):");
-                valid = int.TryParse(Console.ReadLine(), out rows) && rows > 0 && rows <= 20;
+                validRows = int.TryParse(Console.ReadLine(), out size[0]) && size[0] > 0 && size[0] <= 20;
             }
 
-            return rows;
-        }
-
-        /// <summary>
-        /// Asks user to enter columns number
-        /// </summary>
-        /// <returns>Number of columns</returns>
-        public int GetColumns()
-        {
-            bool valid = false;
-            int columns = 0;
-
-            while (!valid)
+            while (!validColumns)
             {
                 Console.WriteLine($"Enter columns (max {Console.BufferWidth / 4}, greater than 0):");
-
-                valid = int.TryParse(Console.ReadLine(), out columns) &&
-                    columns > 0 && columns <= Console.BufferWidth / 4;
+                validColumns = int.TryParse(Console.ReadLine(), out size[1]) &&
+                    size[1] > 0 && size[1] <= Console.BufferWidth / 4;
             }
 
-            return columns;
+            return size;
         }
     }
 }
