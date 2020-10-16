@@ -3,9 +3,12 @@
     /// <summary>
     /// Main entry point where game initialization happens
     /// </summary>
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        /// <summary>
+        /// Starts game engine and runs games
+        /// </summary>
+        public static void Main()
         {
             var gameEngine = new GameEngine();
             gameEngine.RunGames();

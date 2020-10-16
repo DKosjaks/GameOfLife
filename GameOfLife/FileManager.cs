@@ -16,6 +16,9 @@
 
         public FileManager() : this(new FileSystem()) { }
 
+        /// <summary>
+        /// Class for all game file operations
+        /// </summary>
         public FileManager(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
@@ -24,7 +27,7 @@
         /// <summary>
         /// Saves all game data to a file
         /// </summary>
-        /// <param name="stringBuilder"></param>
+        /// <param name="games">List of games</param>
         public void SaveState(List<Game> games)
         {
             var json = JsonConvert.SerializeObject(games);
@@ -34,7 +37,7 @@
         /// <summary>
         /// Reads game data from file
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List of games</returns>
         public List<Game> LoadState()
         {
             var fileContents = _fileSystem.File.ReadAllText(_currentStateFile);

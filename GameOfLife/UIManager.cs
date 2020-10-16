@@ -4,14 +4,17 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Handles console inputs/outputs
+    /// </summary>
     public class UIManager
     {
         /// <summary>
         /// Displays game grid and statistics
         /// </summary>
-        /// <param name="games"></param>
-        /// <param name="gamesCount"></param>
-        /// <param name="cellCount"></param>
+        /// <param name="games">List of games</param>
+        /// <param name="gamesCount">Total running games</param>
+        /// <param name="cellCount">Total alive cells</param>
         public void DrawAllGames(List<Game> games, int gamesCount, int cellCount)
         {
             ShowExitMsg();
@@ -25,13 +28,19 @@
             for (int i = 0; i < games.Count; i++)
             {
                 if (i > 7)
+                {
                     break;
+                }
 
                 if (i == 4)
+                {
                     leftPos = 0;
-                
+                }
+
                 if (i > 3)
+                {
                     topPos = games[i].Grid.GetLength(0) + 3;
+                }
 
                 DrawGame(games[i].Grid, leftPos, topPos, games[i].IterationCount, games[i].CellCount);
                 leftPos += games[i].Grid.GetLength(1);
@@ -41,26 +50,16 @@
         /// <summary>
         /// Draw one game cell grid
         /// </summary>
-        /// <param name="grid"></param>
-        /// <param name="leftPos"></param>
-        /// <param name="topPos"></param>
-        /// <param name="iterationCount"></param>
-        /// <param name="cellCount"></param>
+        /// <param name="grid">Game cells grid</param>
+        /// <param name="leftPos">Left screen start position</param>
+        /// <param name="topPos">Top screen start position</param>
+        /// <param name="iterationCount">Current game iteration</param>
+        /// <param name="cellCount">Current amount of alive cells</param>
         public void DrawGame(CellEnum[,] grid, int leftPos, int topPos, int iterationCount, int cellCount)
         {
             for (var i = 0; i < grid.GetLength(0); i++)
             {
-                try
-                {
-                    Console.SetCursorPosition(leftPos, i + 5 + topPos);
-                }
-                catch (ArgumentOutOfRangeException e)
-                {
-                    Console.WriteLine(e.Message);
-                    Console.ReadLine();
-                    Environment.Exit(0);
-                }
-                
+                Console.SetCursorPosition(leftPos, i + 5 + topPos);
                 Console.Write('|');
 
                 for (var j = 0; j < grid.GetLength(1); j++)
@@ -82,7 +81,7 @@
         /// <summary>
         /// Reads game ids input from user
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Array of game ids</returns>
         public int[] GetGamesIds()
         {
             int[] gameIds = null;
@@ -92,7 +91,7 @@
             {
                 gameIds = Console.ReadLine().Split(',').Select(int.Parse).ToArray();
             }
-            catch (FormatException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 Console.ReadLine();
@@ -111,6 +110,11 @@
             Console.WriteLine("Press any key to stop and save game state to a file");
         }
 
+        /// <summary>
+        /// Shows game data
+        /// </summary>
+        /// <param name="gamesCount">Total active games</param>
+        /// <param name="cellsCount">Total alive cells</param>
         private void ShowAllGamesStats(int gamesCount, int cellsCount)
         {
             Console.Write("Total games: " + gamesCount);
@@ -120,7 +124,7 @@
         /// <summary>
         /// Asks user if he wants to use file to load last game state
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Boolean</returns>
         public bool IsFromFile()
         {
             Console.WriteLine("Load from file?(y/n):");
@@ -131,7 +135,7 @@
         /// <summary>
         /// Asks user to enter rows number
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Number of rows</returns>
         public int GetRows()
         {
             bool valid = false;
@@ -139,9 +143,8 @@
 
             while (!valid)
             {
-                Console.WriteLine("Enter rows:");
-
-                valid = int.TryParse(Console.ReadLine(), out rows);
+                Console.WriteLine($"Enter rows (max 20, greater than 0):");
+                valid = int.TryParse(Console.ReadLine(), out rows) && rows > 0 && rows <= 20;
             }
 
             return rows;
@@ -150,7 +153,7 @@
         /// <summary>
         /// Asks user to enter columns number
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Number of columns</returns>
         public int GetColumns()
         {
             bool valid = false;
@@ -158,9 +161,10 @@
 
             while (!valid)
             {
-                Console.WriteLine("Enter columns:");
+                Console.WriteLine($"Enter columns (max {Console.BufferWidth / 4}, greater than 0):");
 
-                valid = int.TryParse(Console.ReadLine(), out columns);
+                valid = int.TryParse(Console.ReadLine(), out columns) &&
+                    columns > 0 && columns <= Console.BufferWidth / 4;
             }
 
             return columns;
